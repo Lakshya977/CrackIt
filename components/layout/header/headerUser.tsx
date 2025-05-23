@@ -7,8 +7,10 @@ import {
 } from "@heroui/react";
 import { User } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { IUser } from "@/backend/models/user.model";
+import { signOut } from "next-auth/react";
 
-const HeaderUser = () => {
+const HeaderUser = ({user} :{user:IUser}) => {
   return (
     <div className="flex items-center gap-4">
       <Dropdown placement="bottom-start">
@@ -17,17 +19,18 @@ const HeaderUser = () => {
             as="button"
             avatarProps={{
               isBordered: true,
-              src: "/images/default_user.png",
+              src:user?.profilePicture?.url ? user?.profilePicture?.url : undefined, 
+              
             }}
             className="transition-transform"
-            description="john.doe@example.com"
-            name="John Doe"
+            description={user?.email}
+            name={user?.name}
           />
         </DropdownTrigger>
         <DropdownMenu aria-label="User Actions" variant="flat">
           <DropdownItem key="profile" className="h-14 gap-2">
             <p className="font-bold">Signed in as</p>
-            <p className="font-bold">john.doe@example.com</p>
+            <p className="font-bold">{user?.email}</p>
           </DropdownItem>
           <DropdownItem
             key="admin_dashboard"
@@ -47,6 +50,7 @@ const HeaderUser = () => {
             key="logout"
             color="danger"
             startContent={<Icon icon="tabler:logout-2" />}
+             onPress={()=>signOut()}
           >
             Logout
           </DropdownItem>
