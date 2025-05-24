@@ -42,7 +42,7 @@ export default function Page() {
           as={Link}
           href="/subscribe"
         >
-          Try Prep AI Now
+          Try CrackIt Now
         </Button>
         <a href="#pricing">
           <Button

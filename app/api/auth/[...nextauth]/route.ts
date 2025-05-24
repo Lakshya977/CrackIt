@@ -99,18 +99,21 @@ const options = {
 
       return true;
     },
-    async jwt({ token, user }: any) {
+    async jwt({ token, user,trigger }: any) {
       if (user) {
         token.user = user;
       } else {
         await dbConnect();
 
-        const dbUser = await User.findById(token.user.id);
+        const dbUser = await User.findById(token.user._id);
         if (dbUser) {
           token.user = dbUser;
         }
       }
-
+      if(trigger=='update'){
+        let updatedUser = await User.findById(token.user.id);
+        token.user = updatedUser;
+      }
       return token;
     },
     async session({ session, token }: any) {

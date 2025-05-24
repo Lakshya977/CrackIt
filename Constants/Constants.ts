@@ -9,7 +9,7 @@ export const testimonials = [
     rating: 5,
     title: "Amazing Experience",
     content:
-      "Prep AI helped me ace my interviews with confidence. The AI-powered questions were spot on!",
+      "CrackIt helped me ace my interviews with confidence. The AI-powered questions were spot on!",
   },
   {
     user: {
@@ -29,7 +29,7 @@ export const testimonials = [
     rating: 5,
     title: "Highly Recommend",
     content:
-      "I highly recommend Prep AI to anyone preparing for interviews. The AI feedback was invaluable.",
+      "I highly recommend CrackIt to anyone preparing for interviews. The AI feedback was invaluable.",
   },
   {
     user: {
@@ -39,7 +39,7 @@ export const testimonials = [
     rating: 5,
     title: "Great Tool",
     content:
-      "Prep AI is a great tool for interview preparation. The mock interviews were very realistic.",
+      "CrackIt is a great tool for interview preparation. The mock interviews were very realistic.",
   },
   {
     user: {
@@ -59,7 +59,7 @@ export const testimonials = [
     rating: 5,
     title: "Exceptional Service",
     content:
-      "Prep AI provided exceptional service. The AI-driven feedback was incredibly accurate and helpful.",
+      "CrackIt provided exceptional service. The AI-driven feedback was incredibly accurate and helpful.",
   },
   {
     user: {
@@ -79,6 +79,6 @@ export const testimonials = [
     rating: 4,
     title: "Very Useful",
     content:
-      "Prep AI was very useful in preparing for my interviews. The practice sessions helped me gain confidence.",
+      "CrackIt was very useful in preparing for my interviews. The practice sessions helped me gain confidence.",
   },
 ];

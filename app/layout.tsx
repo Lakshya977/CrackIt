@@ -5,6 +5,7 @@ import {Providers} from "./providers";
 import Footer from "@/components/footer/footer";
 import Navbar from "@/components/layout/header/NavBar";
 import HeaderAccouncement from "@/components/layout/header/headerannouncement";
+import { Toaster } from "react-hot-toast";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,7 +31,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>	
         
         
-        
+        <Toaster/>
         <Providers themeProps={ {defaultTheme: 'dark', attribute: 'class'}}>
         <HeaderAccouncement/>
         <div className="relative flex flex-col h-screen">

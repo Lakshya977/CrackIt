@@ -23,7 +23,7 @@ const featuresCategories = [
     descriptions: [
       "Get AI-powered suggestions to craft impactful answers.",
       "Practice with model answers to refine your responses.",
-      "Simulate real-time interviews with Prep AI.",
+      "Simulate real-time interviews with CrackIt.",
     ],
   },
   {
