@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import { usePathname, useRouter } from "next/navigation";
 import { adminPages, appPages } from "@/Constants/pages";
 import { Key } from "@react-types/shared";
-import { getPageIconAndPath } from "@/helper/helper";
+import { getPageIconAndPath } from "@/helper/helpers";
 
 interface IconWrapperProps {
   children: ReactNode;

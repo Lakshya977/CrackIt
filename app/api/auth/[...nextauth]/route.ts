@@ -4,6 +4,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+
 const options = {
   providers: [
     CredentialsProvider({
@@ -14,24 +15,15 @@ const options = {
       },
       async authorize(credentials) {
         await dbConnect();
-
-        const user = await User.findOne({ email: credentials?.email }).select(
-          "+password"
-        );
-
+        const user = await User.findOne({ email: credentials?.email }).select("+password");
         if (!user) {
           throw new Error("Invalid Email or Password");
         }
-
-        const isPasswordMatched = await user.comparePassword(
-          credentials?.password
-        );
-
+        const isPasswordMatched = await user.comparePassword(credentials?.password);
         if (!isPasswordMatched) {
           throw new Error("Invalid Email or Password");
         }
-
-        return user;
+        return { id: user._id.toString(), email: user.email, name: user.name, _id: user._id.toString() };
       },
     }),
     GitHubProvider({
@@ -49,13 +41,10 @@ const options = {
   callbacks: {
     async signIn({ user, account, profile }: any) {
       await dbConnect();
-
       if (account?.provider === "credentials") {
-        user.id = user?._id;
+        user.id = user._id.toString();
       } else {
-        // Handle social login
         const existingUser = await User.findOne({ email: user?.email });
-
         if (!existingUser) {
           const newUser = new User({
             email: user?.email,
@@ -68,59 +57,78 @@ const options = {
               },
             ],
           });
-         // update profiel section 
           await newUser.save();
-          user.id = newUser._id;
+          console.log("Created user (Social):", newUser._id.toString());
+          user.id = newUser._id.toString();
+          user._id = newUser._id.toString();
         } else {
-            //handle mutliple logins 
-          const existingPrvider = existingUser.authProviders.find(
-            (provider: { provider: string }) =>
-              provider.provider === account?.provider
+          const existingProvider = existingUser.authProviders.find(
+            (provider: { provider: string }) => provider.provider === account?.provider
           );
-
-          if (!existingPrvider) {
+          if (!existingProvider) {
             existingUser.authProviders.push({
               provider: account?.provider,
               providerId: profile?.id || profile?.sub,
             });
-
             if (!existingUser.profilePicture.url) {
-              existingUser.profilePicture = {
-                url: profile?.image || user?.image,
-              };
+              existingUser.profilePicture = { url: profile?.image || user?.image };
             }
-
             await existingUser.save();
           }
-
-          user.id = existingUser._id;
+          user.id = existingUser._id.toString();
+          user._id = existingUser._id.toString();
         }
       }
-
       return true;
     },
-    async jwt({ token, user,trigger }: any) {
+    async jwt({ token, user, trigger }: any) {
       if (user) {
-        token.user = user;
-      } else {
+        token.user = {
+          _id: user._id || user.id,
+          email: user.email,
+          name: user.name,
+          profilePicture: user.profilePicture,
+          authProviders: user.authProviders,
+        };
+      } else if (token.user?._id) {
         await dbConnect();
-
         const dbUser = await User.findById(token.user._id);
         if (dbUser) {
-          token.user = dbUser;
+          token.user = {
+            _id: dbUser._id.toString(),
+            email: dbUser.email,
+            name: dbUser.name,
+            profilePicture: dbUser.profilePicture,
+            authProviders: dbUser.authProviders,
+          };
         }
       }
-      if(trigger=='update'){
-        let updatedUser = await User.findById(token.user.id);
-        token.user = updatedUser;
+      if (trigger === "update") {
+        await dbConnect();
+        const updatedUser = await User.findById(token.user._id);
+        if (updatedUser) {
+          token.user = {
+            _id: updatedUser._id.toString(),
+            email: updatedUser.email,
+            name: updatedUser.name,
+            profilePicture: updatedUser.profilePicture,
+            authProviders: updatedUser.authProviders,
+          };
+        }
       }
       return token;
     },
     async session({ session, token }: any) {
-      session.user = token.user;
-
+      if (token.user) {
+        session.user = {
+          _id: token.user._id,
+          email: token.user.email,
+          name: token.user.name,
+          profilePicture: token.user.profilePicture,
+          authProviders: token.user.authProviders,
+        };
+      }
       delete session.user.password;
-
       return session;
     },
   },
