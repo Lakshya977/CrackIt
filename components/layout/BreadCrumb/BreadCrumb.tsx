@@ -20,19 +20,19 @@ const Breadcrumb = ({ title, breadcrumbs }: BreadCrumbProps) => {
             </Link>
           </li>
 
-          {breadcrumbs.map((breadcrumb, index) => (
-            <li key={index}>
-              <div className="flex items-center">
-                <Icon icon="solar:alt-arrow-right-broken" fontSize={20} />
-                <Link
-                  href={breadcrumb.path}
-                  className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
-                >
-                  {breadcrumb.name}
-                </Link>
-              </div>
-            </li>
-          ))}
+          {breadcrumbs.map((breadcrumb) => (
+  <li key={breadcrumb.path}>
+    <div className="flex items-center">
+      <Icon icon="solar:alt-arrow-right-broken" fontSize={20} />
+      <Link
+        href={breadcrumb.path}
+        className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
+      >
+        {breadcrumb.name}
+      </Link>
+        </div>
+      </li>
+     ))}
         </ol>
       </nav>
       <h2 className="text-2xl font-bold">{title}</h2>

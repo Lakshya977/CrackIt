@@ -2,10 +2,12 @@ import Dashboard from "@/components/dashboard/Dashboard";
 import { getAuthHeader } from "@/helper/auth";
 import { cookies } from "next/headers";
 
-async function getDashboardStats(searchParams: Record<string, string | string[] | undefined>) {
+async function getDashboardStats(
+  searchParams: Record<string, string | string[] | undefined>
+) {
   try {
     const urlParams = new URLSearchParams();
-    // Convert searchParams object to query string
+
     for (const [key, value] of Object.entries(searchParams)) {
       if (Array.isArray(value)) {
         value.forEach((val) => urlParams.append(key, val));
@@ -15,20 +17,22 @@ async function getDashboardStats(searchParams: Record<string, string | string[] 
     }
     const queryStr = urlParams.toString();
 
-    const nextCookies = await cookies();
-    const authHeader = getAuthHeader(nextCookies);
+    const cookieStore = await cookies();
+    const authHeader = getAuthHeader(cookieStore);
 
     const response = await fetch(
-      `${process.env.API_URL}/api/dashboard/stats${queryStr ? `?${queryStr}` : ''}`,
-      authHeader
+      `${process.env.API_URL}/api/dashboard/stats${queryStr ? `?${queryStr}` : ""}`,
+      {
+        ...authHeader,
+        cache: "no-store", // prevents caching
+      }
     );
 
     if (!response.ok) {
       throw new Error(`Failed to fetch dashboard stats: ${response.statusText}`);
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error: any) {
     console.error("Error fetching dashboard stats:", error);
     throw new Error(error.message || "An error occurred while fetching the data");
@@ -36,11 +40,12 @@ async function getDashboardStats(searchParams: Record<string, string | string[] 
 }
 
 interface DashboardPageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>; // ✅ mark as Promise
 }
 
 const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
-  const data = await getDashboardStats(searchParams);
+  const resolvedSearchParams = await searchParams; 
+  const data = await getDashboardStats(resolvedSearchParams);
 
   return <Dashboard data={data?.data} />;
 };
